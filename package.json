@@ -1,0 +1,13 @@
+{
+  "name": "covfefe",
+  "version": "0.0.1",
+  "description": "covfefe silly..",
+  "main": "index.js",
+  "dependencies": {
+    "mocha": "^3.4.2",
+    "swint-helper": "^1.2.4"
+  },
+  "scripts": {
+    "test": "mocha test.js"
+  }
+}
