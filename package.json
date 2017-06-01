@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "mocha": "^3.4.2",
-    "swint-helper": "^1.2.4"
+    "swint-helper": "^1.2.4",
+    "express": "4.15.2"
   },
   "scripts": {
     "test": "mocha test.js"
