@@ -18,7 +18,7 @@ describe("Database behavior",function(){
 	});	
 
 	it("Sync DB",function(){
-		let User = db.defineModel({ name : 'user', schema : {
+		db.defineModel({ name : 'user', schema : {
 				firstName : {
 					type : Sequelize.STRING 
 				},
@@ -28,12 +28,14 @@ describe("Database behavior",function(){
 			}
 		});
 
-		return User.sync({ force : true })
+		return db.syncModels()
 				.then(function(){
 					console.log('create');
+					let User = db.getModel('user');
 					return User.create({ firstName : 'Obiwan', lastName : 'Kenobi'});
 				})
 				.then(()=>{
+					let User = db.getModel('user');
 					return User.findAll()
 						.then(users=>{
 							assert(users[0].firstName === 'Obiwan');
