@@ -51,7 +51,7 @@ const startServer = ()=>{
 	});
 		
 	app.get('/report',(req,res) => {
-		server_logs.findAll({ limit : 5, order: 'createdAt DESC' })
+		server_logs.findAll({ limit : 5, order: 'id DESC' })
 			.then((data)=>{
 				res.json({ data : data});
 			});
