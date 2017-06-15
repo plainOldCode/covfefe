@@ -1,4 +1,9 @@
+const argv = require('optimist')
+			.default('e','local')
+			.argv;
+
 let msg = 'covfefe';
+
 let count = 0;
 const getTick = ()=>count++;
 
@@ -7,7 +12,7 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const Database = require('./lib');
-const db = new Database('./firstDB20170612.db');
+const db = new Database(argv.e);
 
 db.defineModel({
 	name : 'server_logs',

@@ -7,11 +7,15 @@
     "cookie-parser": "^1.4.3",
     "express": "4.15.2",
     "mocha": "^3.4.2",
+    "optimist": "^0.6.1",
+    "pg": "^6.2.4",
+    "pg-hstore": "^2.3.2",
     "sequelize": "^3.30.4",
     "sqlite3": "^3.1.8",
     "swint-helper": "^1.2.4"
   },
   "scripts": {
+    "start": "node index.js -e heroku",
     "test": "mocha test"
   }
 }
