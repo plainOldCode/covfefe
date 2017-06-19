@@ -151,4 +151,24 @@ describe("NodeBox runner",function() {
 				return assert(returnValue !== testValue);
 			});
 	});
+
+	it("get subscribe event from NodeBox", function() {
+		let testValue = 'test value';
+		let returnValue = '';
+		let n = new NodeBox({});
+		n.sub({ name : n.pubName()+'.run', subStep : (name ,value) =>{ 
+			returnValue = value
+	   	}});
+		n.input(testValue);
+		n.update();
+		return n.update()
+			.then((v)=> {
+				return new Promise((res,rej)=> {
+					setTimeout(()=>res(v),1000);
+				});
+			})
+			.then((v)=>{
+				return assert(returnValue === testValue);
+			});
+	});
 });

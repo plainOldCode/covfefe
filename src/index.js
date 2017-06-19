@@ -28,17 +28,19 @@ module.exports = class NodeBox {
 
 	input( someValue ) {
 		this.recentInput = someValue;
-		this.recentInputUpdated = false;
+		this.recentInputUpdated = '.pre';
 		return this;
 	}
 
 	update() {
-		if ( this.recentInputUpdate ) return Promise.resolve(this.latestOutput);
-		ps.publish(this.pubName()+'.pre',this.recentInput);
+		ps.publish(this.pubName()+this.recentInputUpdated,this.recentInput);
+		if ( this.recentInputUpdated === '.post' ) return Promise.resolve(this.latestOutput);
+		if ( this.recentInputUpdated === '.run' ) return Promise.resolve(null);
+		this.recentInputUpdated = '.run'; 
 		return this.step(this.recentInput)
 				.then((v) => {
 					this.latestOutput = v;
-					this.recentInputUpdated = true;
+					this.recentInputUpdated = '.post';
 					ps.publish(this.pubName()+'.post',v);
 					return this.latestOutput;
 				})
