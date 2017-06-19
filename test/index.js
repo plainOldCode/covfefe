@@ -8,46 +8,6 @@ describe("Test code start",function() {
 	});
 });
 
-describe("NodeBox runner",function() {
-	it("Make NodeBox One",function() {
-		let n = new NodeBox();
-		assert(n instanceof NodeBox );
-	});
-
-	it("Make NodeBox One and input something and output shoud be same",function() {
-		let n = new NodeBox();
-		n.input(1979);
-		return n.update()
-			.then((v)=>{
-				console.log(v)
-				return assert(v === 1979);
-			})
-	});
-
-	it("Inject process when Make NodeBox",function() {
-		let n = new NodeBox((v)=>v+1);
-		n.input(1979);
-		return n.update()
-			.then((v)=>{
-				console.log(v);
-				return assert(v === 1980);
-			})
-	});
-
-	it("run promise as a process in NodeBox.process", function() {
-		let p = (v) => new Promise((res,rej)=>{
-			res(v+1);
-		});
-		let n = new NodeBox(p);
-		n.input(1979);
-		return n.update()
-			.then((v)=>{
-				console.log(v);
-				return assert(v === 1980);
-			})
-	});
-});
-
 describe("Database behavior",function(){
 	const db = new DB();	
 	it("Create DB",function(){
@@ -90,17 +50,105 @@ describe("Database behavior",function(){
 	});
 });
 
-//describe("Model behavior",function(){
-//	it("Create schema",function(){
-//	});
-//
-//	it("Put Model - insert",function(){
-//	});
-//
-//	it("Put Model - update",function(){
-//	});
-//
-//	it("Get Model",function(){
-//	});
-//});
-		
+describe("NodeBox runner",function() {
+	it("Make NodeBox One",function() {
+		let n = new NodeBox({});
+		assert(n instanceof NodeBox );
+	});
+
+	it("Make NodeBox One and input something and output shoud be same",function() {
+		let n = new NodeBox({});
+		n.input(1979);
+		return n.update()
+			.then((v)=>{
+				return assert(v === 1979);
+			})
+	});
+
+	it("Inject process when Make NodeBox",function() {
+		let n = new NodeBox({ step : (v)=>v+1 });
+		n.input(1979);
+		return n.update()
+			.then((v)=>{
+				return assert(v === 1980);
+			})
+	});
+
+	it("run promise as a process in NodeBox.process", function() {
+		let p = (v) => new Promise((res,rej)=>{
+			res(v+1);
+		});
+		let n = new NodeBox({ step : p});
+		n.input(1979);
+		return n.update()
+			.then((v)=>{
+				return assert(v === 1980);
+			})
+	});
+
+	it("get latestOutput if already updated as a process in NodeBox.process", function() {
+		let p = (v) => new Promise((res,rej)=>{
+			res(v+1);
+		});
+		let n = new NodeBox({ step : p});
+		n.input(1979);
+		n.update();
+		setTimeout(()=>{
+			return n.update()
+				.then((v)=>{
+					return assert(v === 1980);
+				})
+		},1000)
+	});
+
+	it("subscribe event in NodeBox", function() {
+		let testValue = 'test value';
+		let returnValue = '';
+		let n = new NodeBox({});
+		n.sub({ name : n.pubName(), subStep : (name ,value) => returnValue = value });
+		n.input(testValue);
+		return n.update()
+			.then((v)=> {
+				return new Promise((res,rej)=> {
+					setTimeout(()=>res(v),1000);
+				});
+			})
+			.then((v)=>{
+				return assert(returnValue === testValue);
+			});
+	});
+	
+	it("subscribe event from other NodeBox", function() {
+		let n = new NodeBox({ step : (v) => v+1 });
+		let m = new NodeBox({ step : (v) => v+1 });
+		n.input(1979);
+		m.sub({ name : n.pubName()+'.post', subStep : (n,v)=>m.process(v)});
+		return n.update()
+			.then((v)=>{
+				return new Promise((res,rej) => {
+					setTimeout(()=>res(m.update()),1000);
+				});
+			})
+			.then((v)=>{
+				return assert( v === 1981);
+			});
+	});
+
+	it("unsubscribe event in NodeBox", function() {
+		let testValue = 'test value';
+		let returnValue = '';
+		let n = new NodeBox({});
+		n.sub({ name : n.pubName(), subStep : (name ,value) => returnValue = value });
+		n.unSub( n.pubName() );
+		n.input(testValue);
+		return n.update()
+			.then((v)=> {
+				return new Promise((res,rej)=> {
+					setTimeout(()=>res(v),1000);
+				});
+			})
+			.then((v)=>{
+				return assert(returnValue !== testValue);
+			});
+	});
+});
