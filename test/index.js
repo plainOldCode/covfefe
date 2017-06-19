@@ -2,6 +2,7 @@ const DB = require('../lib');
 const assert = require('assert');
 const Sequelize = require('sequelize');
 const NodeBox = require('../src');
+const print = require('swint-helper').print;
 
 describe("Test code start",function() {
 	it("Test code run",function() {
@@ -58,8 +59,7 @@ describe("NodeBox runner",function() {
 
 	it("Make NodeBox One and input something and output shoud be same",function() {
 		let n = new NodeBox({});
-		n.input(1979);
-		return n.update()
+		return n.input(1979)
 			.then((v)=>{
 				return assert(v === 1979);
 			})
@@ -67,8 +67,7 @@ describe("NodeBox runner",function() {
 
 	it("Inject process when Make NodeBox",function() {
 		let n = new NodeBox({ step : (v)=>v+1 });
-		n.input(1979);
-		return n.update()
+		return n.input(1979)
 			.then((v)=>{
 				return assert(v === 1980);
 			})
@@ -79,8 +78,7 @@ describe("NodeBox runner",function() {
 			res(v+1);
 		});
 		let n = new NodeBox({ step : p});
-		n.input(1979);
-		return n.update()
+		return n.input(1979)
 			.then((v)=>{
 				return assert(v === 1980);
 			})
@@ -91,10 +89,8 @@ describe("NodeBox runner",function() {
 			res(v+1);
 		});
 		let n = new NodeBox({ step : p});
-		n.input(1979);
-		n.update();
 		setTimeout(()=>{
-			return n.update()
+			n.input(1979)
 				.then((v)=>{
 					return assert(v === 1980);
 				})
@@ -106,31 +102,30 @@ describe("NodeBox runner",function() {
 		let returnValue = '';
 		let n = new NodeBox({});
 		n.sub({ name : n.pubName(), subStep : (name ,value) => returnValue = value });
-		n.input(testValue);
-		return n.update()
+		return n.input(testValue)
 			.then((v)=> {
 				return new Promise((res,rej)=> {
-					setTimeout(()=>res(v),1000);
+					setTimeout(()=>res(v),100);
 				});
 			})
 			.then((v)=>{
-				return assert(returnValue === testValue);
+				return assert(returnValue.done === testValue);
 			});
 	});
 	
 	it("subscribe event from other NodeBox", function() {
 		let n = new NodeBox({ step : (v) => v+1 });
 		let m = new NodeBox({ step : (v) => v+1 });
-		n.input(1979);
-		m.sub({ name : n.pubName()+'.post', subStep : (n,v)=>m.process(v)});
-		return n.update()
+		let m_orderNumber = m.getOrderNumber();
+		m.sub({ name : n.pubName()+'.post.'+n.getOrderNumber(), subStep : (n,v)=>m.input(v.done)});
+		return n.input(1979)
 			.then((v)=>{
 				return new Promise((res,rej) => {
-					setTimeout(()=>res(m.update()),1000);
+					setTimeout(()=>res(),100);
 				});
 			})
-			.then((v)=>{
-				return assert( v === 1981);
+			.then(()=>{
+				return assert( m.output(m_orderNumber) === 1981);
 			});
 	});
 
@@ -140,31 +135,29 @@ describe("NodeBox runner",function() {
 		let n = new NodeBox({});
 		n.sub({ name : n.pubName(), subStep : (name ,value) => returnValue = value });
 		n.unSub( n.pubName() );
-		n.input(testValue);
-		return n.update()
+		return n.input(testValue)
 			.then((v)=> {
 				return new Promise((res,rej)=> {
-					setTimeout(()=>res(v),1000);
+					setTimeout(()=>res(),100);
 				});
 			})
-			.then((v)=>{
+			.then(()=>{
+
 				return assert(returnValue !== testValue);
 			});
 	});
-
-	it("get subscribe event from NodeBox", function() {
+	
+	it("get subscribe pre event from NodeBox", function() {
 		let testValue = 'test value';
 		let returnValue = '';
 		let n = new NodeBox({});
-		n.sub({ name : n.pubName()+'.run', subStep : (name ,value) =>{ 
-			returnValue = value
+		n.sub({ name : n.pubName()+'.pre', subStep : (name ,value) =>{ 
+			returnValue = value.value
 	   	}});
-		n.input(testValue);
-		n.update();
-		return n.update()
+		return n.input(testValue)
 			.then((v)=> {
 				return new Promise((res,rej)=> {
-					setTimeout(()=>res(v),1000);
+					setTimeout(()=>res(v),100);
 				});
 			})
 			.then((v)=>{

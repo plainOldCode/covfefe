@@ -7,6 +7,9 @@ module.exports = class NodeBox {
 		this.name = name;
 		this.step = (...args) => Promise.resolve( typeof step === 'function' ? step.apply(null,args) : args);
 		this.subSteps = [];
+		this.orderCount = 0;
+		this.orders = [];
+		this.ordered = [];
 	}
 
 	pubName() {
@@ -26,32 +29,42 @@ module.exports = class NodeBox {
 			ps.unsubscribe( chosen[0].sub );
 	}
 
-	input( someValue ) {
-		this.recentInput = someValue;
-		this.recentInputUpdated = '.pre';
-		return this;
+	getOrderNumber() {
+		return this.orderCount;
 	}
 
-	update() {
-		ps.publish(this.pubName()+this.recentInputUpdated,this.recentInput);
-		if ( this.recentInputUpdated === '.post' ) return Promise.resolve(this.latestOutput);
-		if ( this.recentInputUpdated === '.run' ) return Promise.resolve(null);
-		this.recentInputUpdated = '.run'; 
-		return this.step(this.recentInput)
+	input( inputValue ) {
+		let order = {
+			number : this.orderCount++,
+			value : inputValue
+		};
+
+		this.orders.push(order);
+		ps.publish(this.pubName()+'.pre.'+order.number,order);
+		return this._update();
+	}
+
+	_update() {
+		let order = this.orders.shift();
+		if (!order) return Promise.resolve(null);
+		ps.publish(this.pubName()+'.run.'+order.number,order);
+		return this.step(order.value)
 				.then((v) => {
-					this.latestOutput = v;
-					this.recentInputUpdated = '.post';
-					ps.publish(this.pubName()+'.post',v);
-					return this.latestOutput;
+					let processed = {
+						number : order.number,
+						value : order.value,
+						done : v
+					}
+					this.ordered.push(processed);
+					let pubName = this.pubName()+'.post.'+order.number;
+					ps.publish(pubName,processed);
+					return v;
 				})
 	}
 
-	process( someValue ) {
-		return this.input(someValue).update();
-	}
-
-	output() {
-		return this.recentInputUpdated ? this.latestOutput : null;
+	output( orderNumber ) {
+		let o = this.ordered.filter((v)=>v.number===orderNumber);
+		return o.length <= 0 ? 'NOT EXIST' : (o[0].done ? o[0].done : 'NOT YET');
 	}
 
 };
