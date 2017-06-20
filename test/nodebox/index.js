@@ -1,5 +1,6 @@
 const assert = require('assert');
-const NodeBox = require('../../src');
+const NodeBox = require('../../src').NodeBox;
+const StoreBox = require('../../src').StoreBox;
 
 module.exports = function() {
 
@@ -53,7 +54,6 @@ module.exports = function() {
 		it("flow NodeBox", function() {
 			let n = new NodeBox({ step : (v) => v+1 });
 			let m = new NodeBox({ step : (v) => v+1 });
-			let m_orderNumber = m.getOrderNumber();
 			n.flow(m);
 			return n.input(1979)
 				.then((v)=>{
@@ -62,7 +62,7 @@ module.exports = function() {
 					});
 				})
 				.then(()=>{
-					return assert( m.output(m_orderNumber) === 1981);
+					return assert( m.output() === 1981);
 				});
 		});
 
@@ -81,6 +81,66 @@ module.exports = function() {
 				.then(()=>{
 
 					return assert(returnValue !== testValue);
+				});
+		});
+
+	});
+
+	describe("StoreBox runner", function() {
+		it("Make StoreBox One",function() {
+			let n = new StoreBox({});
+			assert(n instanceof StoreBox );
+		});
+
+		it("pull from NodeBox", function() {
+			let n = new NodeBox({ step : (v) => v+1 });
+			let s = new StoreBox({});
+			s.pull(n);
+			return n.input(1979)
+				.then((v)=>{
+					return new Promise((res,rej) => {
+						setTimeout(()=>res(),100);
+					});
+				})
+				.then(()=>{
+					return assert(s.ordered.length >= 1);
+				});
+		});
+
+		it("pull from NodeBox series", function() {
+			let n = new NodeBox({ step : (v) => v+1 });
+			let m = new NodeBox({ step : (v) => v+2 });
+			let s = new StoreBox({});
+			s.pull(n);
+			s.pull(m);
+			m.input(1979);
+			return n.input(1979)
+				.then((v)=>{
+					return new Promise((res,rej) => {
+						setTimeout(()=>res(),100);
+					});
+				})
+				.then(()=>{
+					return assert(s.ordered.length >= 2);
+				});
+		});
+
+		it("pull stop from NodeBox ", function() {
+			let n = new NodeBox({ step : (v) => v+1 });
+			let m = new NodeBox({ step : (v) => v+2 });
+			let s = new StoreBox({});
+			s.pull(n);
+			s.pull(m);
+			s.stop(m);
+			m.input(1979);
+			return n.input(1979)
+				.then((v)=>{
+					return new Promise((res,rej) => {
+						setTimeout(()=>res(),100);
+					});
+				})
+				.then(()=>{
+					return assert(s.ordered.length == 1);
 				});
 		});
 	});
