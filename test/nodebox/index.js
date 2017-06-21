@@ -2,6 +2,8 @@ const assert = require('assert');
 const NodeBox = require('../../src').NodeBox;
 const StoreBox = require('../../src').StoreBox;
 
+const ControlTest = require('../../src').ControlTest;
+
 module.exports = function() {
 
 	describe("NodeBox runner",function() {
@@ -204,6 +206,32 @@ module.exports = function() {
 				.then(()=>{
 					return assert(S.output().length == 4);
 				});
+		});
+	});
+
+	describe("small Cell simulate", function () {
+		it("cell", function () {
+			let n = new NodeBox({});
+			let s = new StoreBox({});
+			let c = new ControlTest({});
+			s.pull(n);
+			c.watch(s);
+
+
+			return new Promise((res,rej) => {
+				for (let i = 0 ; i < 100 ; i++ ) {
+					(function(ind) {
+						setTimeout(function(){
+							n.input(ind);
+							if (ind == 99 ) return res();
+						}, 10 * ind);
+					})(i);
+				}
+			})
+			.then((v)=>{
+				n.halt();
+				return assert( n.subscribeSteps.length == 0 && s.ordered.length==51);
+			})
 		});
 	});
 }

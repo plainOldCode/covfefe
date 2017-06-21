@@ -69,6 +69,13 @@ class NodeBox {
 		return this.latestOutput;
 	}
 
+	halt() {
+		this.subscribeSteps.forEach((v)=>{
+			ps.unsubscribe( v.sub );
+		});
+		this.subscribeSteps = [];
+	}
+
 };
 
 class StoreBox extends NodeBox {
@@ -102,5 +109,24 @@ class StoreBox extends NodeBox {
 
 };
 
+class ControlTest extends NodeBox {
+	
+	constructor({ name = shortid.generate() }) {
+		super({ name : name });
+	}
+
+	watch( dog ) {
+		_subscribe( this, { name:dog.pushEventName(), targetName:_pubName(dog) ,subscribeStep:(n,v)=>this.input(dog)});
+		return dog;
+	}
+
+	input( dog ) {
+		if ( dog.ordered.length > 50 ){
+			dog.halt();
+		}
+	}
+};
+
 exports.NodeBox = NodeBox;
 exports.StoreBox = StoreBox;
+exports.ControlTest = ControlTest;
