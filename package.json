@@ -16,14 +16,14 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.30.4",
     "sqlite3": "^3.1.8",
-    "swint-helper": "^1.2.4"
+    "swint-helper": "^1.2.4",
+    "pubsub-js": "^1.5.7",
+    "shortid": "^2.2.8",
+	"webpack": "^2.2.1"
   },
   "scripts": {
+	"build": "webpack",
     "start": "node index.js -e heroku",
     "test": "mocha test"
-  },
-  "devDependencies": {
-    "pubsub-js": "^1.5.7",
-    "shortid": "^2.2.8"
   }
 }
