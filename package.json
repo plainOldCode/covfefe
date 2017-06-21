@@ -19,11 +19,15 @@
     "swint-helper": "^1.2.4",
     "pubsub-js": "^1.5.7",
     "shortid": "^2.2.8",
-	"webpack": "^2.2.1"
+    "webpack": "^2.2.1"
   },
   "scripts": {
-	"build": "webpack",
+    "build": "webpack --config ./webpack.config.js --progress",
     "start": "node index.js -e heroku",
-    "test": "mocha test"
+    "test": "mocha test",
+	"heroku-postbuild": "webpack --config ./webpack.config.js --progress"
+  },
+  "devDependencies": {
+    "sqlite3": "^3.1.8"
   }
 }
