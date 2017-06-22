@@ -109,15 +109,25 @@ class StoreBox extends NodeBox {
 
 };
 
-class ControlTest extends NodeBox {
-	
+class StoreControl extends NodeBox {
 	constructor({ name = shortid.generate() }) {
 		super({ name : name });
 	}
 
-	watch( dog ) {
-		_subscribe( this, { name:dog.pushEventName(), targetName:_pubName(dog) ,subscribeStep:(n,v)=>this.input(dog)});
-		return dog;
+	watch( store ) {
+		_subscribe( this, { name:store.pushEventName(), targetName:_pubName(store) ,subscribeStep:(n,v)=>this.input(store)});
+		return store;
+	}
+
+	input( store ) {
+		console.log('please rewrite this function');
+	}
+}
+
+class ControlTest extends StoreControl {
+	
+	constructor({ name = shortid.generate() }) {
+		super({ name : name });
 	}
 
 	input( dog ) {
@@ -129,4 +139,5 @@ class ControlTest extends NodeBox {
 
 exports.NodeBox = NodeBox;
 exports.StoreBox = StoreBox;
+exports.StoreControl = StoreControl;
 exports.ControlTest = ControlTest;

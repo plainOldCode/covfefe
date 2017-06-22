@@ -1,8 +1,52 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<script type="text/javascript" src="./bundle.js"></script>
-	</body>
+<head>
+	<title>Welcome to Vue</title>
+	<script src="https://unpkg.com/vue"></script>
+	<script type="text/javascript" src="./bundle.js"></script>
+</head>
+<body>
+<div id="app">
+    <!-- <button v-on="click: addNewElement()">Add Element</button> 
+    <br />-->
+</div>
+<script>
+	let n = new document.NodeBox({ step : (v) => v+1 });
+	let s = new document.StoreBox({});
+	let c = new document.StoreControl({});
+	let tmp = null;
+	s.pull(n);
+	c.watch(s);
+	c.input = function( store) {
+		console.log('store',store);
+		if (store.ordered.length == 5) {
+			var elem = document.getElementById("mine");
+ 			elem.parentElement.removeChild(elem);
+			addNewElement();
+			store.ordered = [];
+		}
+	};
+	function addNewElement(){
+		var MyComponent = Vue.extend({
+		  template: '<button id="mine" v-on:click="give(1)">Click</button>',
+		  methods : {
+			give : function(number) {
+				n.input(number);
+			}
+		  }
+		})
+		tmp = new MyComponent().$mount()
+		document.getElementById('app').appendChild(tmp.$el)
+	}
+
+	const v = new Vue({
+		el: '#app',
+		methods:{
+			addNewElement: addNewElement
+		}
+	});
+
+	v.addNewElement();
+</script>
+</body>
 </html>
