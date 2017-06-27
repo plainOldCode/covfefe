@@ -1,8 +1,10 @@
 const assert = require('assert');
-const NodeBox = require('../../src').NodeBox;
-const StoreBox = require('../../src').StoreBox;
+const NodeBox = require('../../src/base').NodeBox;
+const StoreBox = require('../../src/base').StoreBox;
 
-const ControlTest = require('../../src').ControlTest;
+const ControlTest = require('../../src/base').ControlTest;
+
+const NodeBoxManager = require('../../src/manager').NodeBoxManager;
 
 module.exports = function() {
 
@@ -231,6 +233,48 @@ module.exports = function() {
 			.then((v)=>{
 				n.halt();
 				return assert( n.subscribeSteps.length == 0 && s.ordered.length==51);
+			})
+		});
+	});
+
+	describe("NodeBoxManager simulate", function () {
+		it("create Manager", function () {
+			//this.timeout(5000);
+			let m = new NodeBoxManager(10);
+
+			return new Promise((res,rej) => {
+				setTimeout(function(){
+					if (m.timerCount === 9) {
+						res( true );
+					} else {
+						rej( false );
+					}
+				},105);
+			})
+		});
+
+		it("create node and remove", function () {
+			//this.timeout(5000);
+			let m = new NodeBoxManager(10);
+			let n = m.create();
+			m.create();
+			m.create();
+
+			for (let i=0;i < 10;i++) n.input(10);
+
+			return new Promise((res,rej) => {
+				setTimeout(function(){
+					if( m.nodeBoxes.length > 0) {
+						if ( m.storeManager.archive.length > 0 ) {
+							m.removeAll();
+							res(true);
+						} else {
+							rej(false);
+						}
+					}
+				},105);
+			}).then((v)=>{
+				return m.nodeBoxes.length <= 0;
 			})
 		});
 	});

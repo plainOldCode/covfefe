@@ -103,6 +103,10 @@ class StoreBox extends NodeBox {
 		return this.ordered;
 	}
 
+	flush() {
+		this.ordered = [];
+	}
+
 	pushEventName() {
 		return _pubName(this)+'.pushed';
 	}

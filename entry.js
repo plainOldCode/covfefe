@@ -1,4 +1,4 @@
-document.NodeBox = require('./src').NodeBox;
-document.StoreBox = require('./src').StoreBox;
-document.StoreControl = require('./src').StoreControl;
+document.NodeBox = require('./src/base').NodeBox;
+document.StoreBox = require('./src/base').StoreBox;
+document.StoreControl = require('./src/base').StoreControl;
 
