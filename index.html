@@ -11,6 +11,8 @@
     <br />-->
 </div>
 <script>
+	const nbm = new document.NodeBoxManager(false);
+
 	let buttonIdCounter = 0;
 	function getButtonId() {
 		return 'myButton'+(buttonIdCounter++);
@@ -18,13 +20,8 @@
 	let Buttons = [];
 
 	function addNewElement ( buttonId ) {
-		let n = new document.NodeBox({ step : (v) => v+1 }),
-			s = new document.StoreBox({}),
-			c = new document.StoreControl({});
-
-		s.pull(n);
-		c.watch(s);
-		c.input = function( store ) {
+		 
+		function storeControl ( store ) {
 			console.log(store);
 			if (store.ordered.length == 5) {
 				addNewElement( getButtonId() );
@@ -33,18 +30,22 @@
 			tmp.counter();
 
 			if (Buttons.length > 5) {
-				let a = Buttons.filter( (v)=> v.buttonId === c.buttonId);
-				Buttons.filter( (v) => v.buttonId !== c.buttonId).forEach( (v) => {
+				let a = Buttons.filter( (v)=> v.buttonId === n.buttonId);
+				Buttons.filter( (v) => v.buttonId !== n.buttonId).forEach( (v) => {
 						let elem = document.getElementById(v.buttonId);
 						elem.parentElement.removeChild(elem);
-						v.storeControl.halt();
-						v.store.halt();
-						v.node.halt();
+						nbm.remove(v.node);
 					});
 				Buttons = a;
 			}
 		};
-		c.buttonId = buttonId;
+
+		let n = nbm.create({ 
+			step : (v)=> v+1,
+			controller : storeControl
+		});
+		
+		n.buttonId = buttonId;
 
 		var MyComponent = Vue.extend({
 			template: '<button id="'+buttonId+'" v-on:click="give(1)"> Click '+buttonId+' {{ count }}</button>',
@@ -59,7 +60,7 @@
 					//this.counter();
 				},
 				counter : function () {
-					this.count = s.ordered.length;
+					this.count = n.store.ordered.length;
 				}
 			}
 		})
@@ -68,9 +69,7 @@
 		document.getElementById('app').appendChild(tmp.$el);
 		Buttons.push({
 			buttonId : buttonId,
-			node : n,
-			store : s,
-			storeControl : c
+			node : n
 		});
 	}
 

@@ -8,14 +8,16 @@ class StoreManager extends StoreControl {
 		super({});
 		this.storeBoxes = [];
 		this.archive = [];
+		this.storeController = {};
 	}
 
-	watch ( nodeBox ) {
+	watch ( nodeBox , storeController ) {
 		let s = new StoreBox({});
 		s.pull(nodeBox);
 		nodeBox.store = s;
 		super.watch(s);
 		this.storeBoxes.push();
+		this.storeController[s.name] = storeController
 	}
 
 	unwatch ( store ) {
@@ -30,32 +32,38 @@ class StoreManager extends StoreControl {
 		let item = {
 			storeName : store.name,
 			ordered : store.output(),
-			timeStamp : process.hrtime()
+			timeStamp : new Date()
 		};
-		this.archive.push(item);
-		store.flush();
+		if (this.storeController[store.name]) {
+			this.storeController[store.name].apply(null,[store]);
+		} else {
+			this.archive.push(item);
+			store.flush();
+		}
 	}
 }
 
 class NodeBoxManager {
-	constructor ( timerDelay = 1000 ) {
+	constructor ( useTimer = true , timerDelay = 1000 ) {
 		let that = this;
 		const timerNode = new NodeBox({});
 		this.storeManager = new StoreManager({});
 		this.nodeBoxes = [];
 		this.timerCount = 0;
 		this.timerNode = timerNode;
-		this.timer = setInterval(()=>{
-			timerNode.input(1);
-			that.timerCount++;			
-		},timerDelay);
+		if ( useTimer) {
+			this.timer = setInterval(()=>{
+				timerNode.input(1);
+				that.timerCount++;			
+			},timerDelay);
+		}
 	}
 	
-	create () {
-		let n = new NodeBox({});
+	create ({ step = (v)=>v, controller = (v)=>console.log(v) }) {
+		let n = new NodeBox({ step : step });
 		this.timerNode.flow(n);
 		this.nodeBoxes.push(n);
-		this.storeManager.watch(n);
+		this.storeManager.watch(n,controller);
 		return n;
 	}
 

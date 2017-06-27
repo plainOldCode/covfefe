@@ -240,7 +240,7 @@ module.exports = function() {
 	describe("NodeBoxManager simulate", function () {
 		it("create Manager", function () {
 			//this.timeout(5000);
-			let m = new NodeBoxManager(10);
+			let m = new NodeBoxManager(true,10);
 
 			return new Promise((res,rej) => {
 				setTimeout(function(){
@@ -255,10 +255,10 @@ module.exports = function() {
 
 		it("create node and remove", function () {
 			//this.timeout(5000);
-			let m = new NodeBoxManager(10);
-			let n = m.create();
-			m.create();
-			m.create();
+			let m = new NodeBoxManager(true,10);
+			let n = m.create({ controller : null });
+			m.create({ controller : null });
+			m.create({ controller : null });
 
 			for (let i=0;i < 10;i++) n.input(10);
 
