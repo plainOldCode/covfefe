@@ -1,6 +1,25 @@
 const NodeBox = require('../base').NodeBox;
 const StoreBox = require('../base').StoreBox;
 const StoreControl = require('../base').StoreControl;
+const UnitGenerator = require('../units').UnitGenerator;
+
+
+class UnitManager {
+	constructor() {
+		this.ug = new UnitGenerator();
+		this.metaUnits = [];
+	}
+
+	unlockMeta () {
+		let meta = this.ug.get();
+		this.metaUnits.push(meta);
+	}
+
+	makeUnit ( indexOfMeta ) {
+		let candidate = this.metaUnits[indexOfMeta];
+		return candidate;
+	}
+}
 
 class StoreManager extends StoreControl {
 	
