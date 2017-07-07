@@ -23,10 +23,10 @@
     "big-integer": "^1.6.23"
   },
   "scripts": {
-    "build": "webpack --config ./webpack.config.js --progress && cp -r src/lib static",
+    "build": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static",
     "start": "node index.js -e heroku",
     "test": "mocha test",
-    "heroku-postbuild": "webpack --config ./webpack.config.js --progress && cp -r src/lib static"
+    "heroku-postbuild": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static"
   },
   "devDependencies": {
     "sqlite3": "^3.1.8"

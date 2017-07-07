@@ -10,7 +10,7 @@ ig.module(
 MyGame = ig.Game.extend({
 	
 	// Load a font
-	//font: new ig.Font( 'media/04b03.font.png' ),
+	font: new ig.Font( 'media/04b03.font.png' ),
 	
 	
 	init: function() {
@@ -28,13 +28,11 @@ MyGame = ig.Game.extend({
 		// Draw all entities and backgroundMaps
 		this.parent();
 		
-		
-		console.log('draw update');
 		// Add your own drawing code here
 		var x = ig.system.width/2,
 			y = ig.system.height/2;
 		
-		//this.font.draw( 'It Works!', x, y, ig.Font.ALIGN.CENTER );
+		this.font.draw( 'It Works!', x, y, ig.Font.ALIGN.CENTER );
 	}
 });
 
