@@ -244,12 +244,12 @@ module.exports = function() {
 
 			return new Promise((res,rej) => {
 				setTimeout(function(){
-					if (m.timerCount === 9) {
+					if (m.timerCount >= 9) {
 						res( true );
 					} else {
 						rej( false );
 					}
-				},105);
+				},110);
 			})
 		});
 
