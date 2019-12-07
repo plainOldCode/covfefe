@@ -1,26 +1,24 @@
 {
   "name": "covfefe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "covfefe silly..",
   "main": "index.js",
   "engines": {
-    "node": "7.10.0",
-    "npm": "4.2.0"
+    "node": "8.16.2",
+    "npm": "6.4.1"
   },
   "dependencies": {
+    "big-integer": "^1.6.23",
     "cookie-parser": "^1.4.3",
-    "express": "4.15.2",
-    "mocha": "^3.4.2",
+    "express": "^4.17.1",
+    "mocha": "^6.2.2",
     "optimist": "^0.6.1",
     "pg": "^6.2.4",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^3.30.4",
-    "sqlite3": "^3.1.8",
-    "swint-helper": "^1.2.4",
     "pubsub-js": "^1.5.7",
+    "sequelize": "^6.0.0",
     "shortid": "^2.2.8",
-    "webpack": "^2.2.1",
-    "big-integer": "^1.6.23"
+    "webpack": "^2.2.1"
   },
   "scripts": {
     "build": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static",
@@ -29,6 +27,6 @@
     "heroku-postbuild": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static"
   },
   "devDependencies": {
-    "sqlite3": "^3.1.8"
+    "sqlite3": "^4.1.1"
   }
 }

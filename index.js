@@ -29,8 +29,7 @@ db.defineModel({
 
 const startServer = ()=>{
 	const server_logs = db.getModel('server_logs');
-	app.set('port', (process.env.PORT || 5000));
-
+	app.set('port', (process.env.PORT || argv.e === 'local' ? 8080 : 80))
 	app.use(express.static(__dirname + '/static'));
 
 	// views is directory for all template files

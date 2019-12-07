@@ -1,4 +1,3 @@
-const print = require('swint-helper').print;
 const dbTest = require('./db');
 const nodeBoxTest = require('./nodebox');
 const ScenarioBoxTest = require('./scenario');
