@@ -3,7 +3,8 @@ const nodeBoxTest = require('./nodebox');
 const ScenarioBoxTest = require('./scenario');
 
 describe("Test code start",function() {
-	it("Test code run",function() {
+	it("Test code run",function(done) {
+		done();
 	});
 });
 
