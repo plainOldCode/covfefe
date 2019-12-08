@@ -11,7 +11,6 @@
     "big-integer": "^1.6.23",
     "cookie-parser": "^1.4.3",
     "express": "^4.17.1",
-    "mocha": "^6.2.2",
     "optimist": "^0.6.1",
     "pg": "^6.2.4",
     "pg-hstore": "^2.3.2",
@@ -23,11 +22,20 @@
   "scripts": {
     "build": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static",
     "start": "node index.js -e heroku",
-    "test_old": "mocha test",
-    "test": "echo test pass",
+    "test": "jest",
+    "test_skip": "echo test pass",
     "heroku-postbuild": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static"
   },
   "devDependencies": {
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "jest": "^24.9.0"
+  },
+  "jest": {
+    "verbose": true,
+    "globals": {
+      "__DEV__": true
+    },
+    "testRegex": "./test/.*.js$",
+    "rootDir": "."
   }
 }
