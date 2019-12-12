@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "webpack --config ./webpack.config.js --progress && cp -r src/lib static && cp -r media static",
+    "dev": "npm run build && node index.js",
     "start": "node index.js -e heroku",
     "test": "jest",
     "test_skip": "echo test pass",
