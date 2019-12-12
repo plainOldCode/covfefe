@@ -18,15 +18,15 @@ npm test
 
 # dependencies
 
-[impactjs](https://impactjs.com/)
-[jest](https://www.npmjs.com/package/jest)
-[sequelize](https://www.npmjs.com/package/sequelize)
-[vue.js](https://vuejs.org/)
+[[impactjs]](https://impactjs.com/)
+[[jest]](https://www.npmjs.com/package/jest)
+[[sequelize]](https://www.npmjs.com/package/sequelize)
+[[vue.js]](https://vuejs.org/)
 
 # CI
 
-[github actions](https://github.com/plainOldCode/covfefe/actions)
+[[github actions]](https://github.com/plainOldCode/covfefe/actions)
 
 # CD
 
-[heroku](https://dashboard.heroku.com/apps/tranquil-stream-87391)
+[[heroku]](https://dashboard.heroku.com/apps/tranquil-stream-87391)
