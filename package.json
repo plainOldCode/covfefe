@@ -10,7 +10,7 @@
   "dependencies": {
     "big-integer": "^1.6.23",
     "cookie-parser": "^1.4.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "optimist": "^0.6.1",
     "pg": "^6.2.4",
     "pg-hstore": "^2.3.2",
